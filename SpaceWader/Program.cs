@@ -6,13 +6,22 @@ using System.Threading.Tasks;
 
 namespace SpaceWader
 {
+    class Coordinate
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
+
     class Program
     {
-        protected static int origRow;
-        protected static int origCol;
+        protected static string invader = "x";
+        protected static string border = "+-+-+-+-+-+-+-+-+-+-+-+-+";
 
         protected static void WriteAt(string s, int x, int y)
         {
+            int origRow = 0;
+            int origCol = 0;
+
             try
             {
                 Console.SetCursorPosition(origCol + x, origRow + y);
@@ -25,37 +34,83 @@ namespace SpaceWader
             }
         }
 
-        protected static void ClearCurrentConsoleLine(int x, int y)
+        protected static Coordinate Hero { get; set; }
+
+        static void InitGame()
         {
-            try
+            Hero = new Coordinate()
             {
-                Console.SetCursorPosition(origCol + x, origRow + y);
-                Console.Write(' ');
-            }
-            catch (ArgumentOutOfRangeException e)
+                X = 0,
+                Y = 1
+            };
+
+            MoveHero(0, 0);
+        }
+        
+        static void MoveHero(int x, int y)
+        {
+            Coordinate newHero = new Coordinate()
             {
-                Console.Clear();
-                Console.WriteLine(e.Message);
+                X = Hero.X + x,
+                Y = Hero.Y + y
+            };
+
+            if (CanMove(newHero))
+            {
+                RemoveHero();
+
+                Console.SetCursorPosition(newHero.X, newHero.Y);
+                Console.Write(invader);
+                
+                Hero = newHero;
             }
+        }
+
+        static void RemoveHero()
+        {
+            Console.SetCursorPosition(Hero.X, Hero.Y);
+            Console.Write(" ");
+        }
+
+        static bool CanMove(Coordinate c)
+        {
+            if (c.X < 0 || c.X >= Console.WindowWidth) return false;
+            if (c.Y < 0 || c.Y >= Console.WindowHeight) return false;
+            return true;
         }
 
         static void Main(string[] args)
         {
-            for (int i = 1; i < 11; i++)
+            WriteAt(border, 0, 0);
+            WriteAt(border, 0, 11);
+
+            InitGame();
+
+            ConsoleKeyInfo keyInfo;
+
+            while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Escape)
             {
-                string border = "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+";
-                WriteAt(border, 0, 0);
-                WriteAt(border, 0, 11);
+                switch (keyInfo.Key)
+                {
+                    case ConsoleKey.RightArrow:
+                        MoveHero(1, 0);
+                        break;
 
-                string invader = "x";
-                WriteAt(invader, 0, i);
+                    case ConsoleKey.LeftArrow:
+                        MoveHero(-1, 0);
+                        break;
 
-                ClearCurrentConsoleLine(0, i-1);
+                    case ConsoleKey.DownArrow:
+                        MoveHero(0, 1);
+                        break;
+                }
 
-                System.Threading.Thread.Sleep(500);
+                if (Hero.Y > 10 | Hero.X > 10)
+                {
+                    RemoveHero();
+                    break;
+                }
             }
-            
-            Console.ReadKey(true);
         }
     }
 }
