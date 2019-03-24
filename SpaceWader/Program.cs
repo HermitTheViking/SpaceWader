@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace SpaceWader
 {
@@ -33,7 +34,7 @@ namespace SpaceWader
 
         protected static Coordinate Hero { get; set; }
 
-        static void InitGame()
+        private static void InitGame()
         {
             Hero = new Coordinate()
             {
@@ -63,7 +64,7 @@ namespace SpaceWader
             }
         }
 
-        static void RemoveHero()
+        private static void RemoveHero()
         {
             Console.SetCursorPosition(Hero.X, Hero.Y);
             Console.Write(" ");
@@ -76,8 +77,37 @@ namespace SpaceWader
             return true;
         }
 
+        private static Timer aTimer;
+
+        private static void SetTimer()
+        {
+            aTimer = new Timer(700);
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
+        }
+
+        static void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            MoveHero(0, 1);
+        }
+
+        static bool CheckXY(int x, int y)
+        {
+            if (Hero.Y > 10 | Hero.X > 24)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         static void Main(string[] args)
         {
+            SetTimer();
+
             string border = "+-+-+-+-+-+-+-+-+-+-+-+-+";
 
             WriteAt(border, 0, 0);
@@ -92,24 +122,46 @@ namespace SpaceWader
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.RightArrow:
+                        aTimer.Stop();
                         MoveHero(1, 0);
+                        aTimer.Start();
                         break;
 
                     case ConsoleKey.LeftArrow:
+                        aTimer.Stop();
                         MoveHero(-1, 0);
+                        aTimer.Start();
                         break;
 
                     case ConsoleKey.DownArrow:
+                        aTimer.Stop();
                         MoveHero(0, 1);
+                        aTimer.Start();
                         break;
                 }
 
-                if (Hero.Y > 10 | Hero.X > 10)
+                if (CheckXY(Hero.Y, Hero.X))
                 {
-                    RemoveHero();
                     break;
                 }
             }
+
+            RemoveHero();
+            aTimer.Stop();
+            aTimer.Dispose();
+
+            if (Hero.Y > 10 | Hero.X > 24)
+            {
+                WriteAt("You have hit the border", 0, 12);
+                WriteAt("Press any key to exit", 0, 13);
+            }
+            else
+            {
+                WriteAt("You have hit the ESC key", 0, 12);
+                WriteAt("Press any key to exit", 0, 13);
+            }
+
+            Console.ReadKey();
         }
     }
 }
