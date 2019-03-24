@@ -14,9 +14,6 @@ namespace SpaceWader
 
     class Program
     {
-        protected static string invader = "x";
-        protected static string border = "+-+-+-+-+-+-+-+-+-+-+-+-+";
-
         protected static void WriteAt(string s, int x, int y)
         {
             int origRow = 0;
@@ -60,7 +57,7 @@ namespace SpaceWader
                 RemoveHero();
 
                 Console.SetCursorPosition(newHero.X, newHero.Y);
-                Console.Write(invader);
+                Console.Write("x");
                 
                 Hero = newHero;
             }
@@ -81,6 +78,8 @@ namespace SpaceWader
 
         static void Main(string[] args)
         {
+            string border = "+-+-+-+-+-+-+-+-+-+-+-+-+";
+
             WriteAt(border, 0, 0);
             WriteAt(border, 0, 11);
 
