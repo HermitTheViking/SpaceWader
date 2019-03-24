@@ -94,14 +94,7 @@ namespace SpaceWader
 
         static bool CheckXY(int x, int y)
         {
-            if (Hero.Y > 10 | Hero.X > 24)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return y > 10 | x > 24 ? true : false;
         }
 
         static void Main(string[] args)
@@ -140,7 +133,7 @@ namespace SpaceWader
                         break;
                 }
 
-                if (CheckXY(Hero.Y, Hero.X))
+                if (CheckXY(Hero.X, Hero.Y))
                 {
                     break;
                 }
