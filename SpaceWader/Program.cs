@@ -13,9 +13,77 @@ namespace SpaceWader
         public int Y { get; set; }
     }
 
-    class Program
+    class Hero
     {
-        protected static void WriteAt(string s, int x, int y)
+        public static Coordinate HeroCord { get; set; }
+
+        public static void MoveHero(int x, int y)
+        {
+            Coordinate newHero = new Coordinate()
+            {
+                X = HeroCord.X + x,
+                Y = HeroCord.Y + y
+            };
+
+            if (CanMove(newHero))
+            {
+                RemoveHero();
+
+                Console.SetCursorPosition(newHero.X, newHero.Y);
+                Console.Write("x");
+
+                HeroCord = newHero;
+            }
+        }
+
+        public static void RemoveHero()
+        {
+            Console.SetCursorPosition(HeroCord.X, HeroCord.Y);
+            Console.Write(" ");
+        }
+
+        static bool CanMove(Coordinate c)
+        {
+            if (c.X < 0 || c.X > 24) return false;
+            if (c.Y < 0 || c.Y > 10) return false;
+            return true;
+        }
+
+        private static Timer aTimer;
+
+        public static void SetTimer()
+        {
+            aTimer = new Timer(700);
+            aTimer.Elapsed += OnTimedEvent;
+            aTimer.AutoReset = true;
+            aTimer.Enabled = true;
+        }
+
+        public static void TODOTimer(string todo)
+        {
+            if (todo == "Stop")
+            {
+                aTimer.Stop();
+            }
+            else if (todo == "Start")
+            {
+                aTimer.Start();
+            }
+            else if (todo == "Dispose")
+            {
+                aTimer.Dispose();
+            }
+        }
+
+        static void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            MoveHero(0, 1);
+        }
+    }
+
+    class World
+    {
+        public static void WriteAt(string s, int x, int y)
         {
             int origRow = 0;
             int origCol = 0;
@@ -31,9 +99,10 @@ namespace SpaceWader
                 Console.WriteLine(e.Message);
             }
         }
+    }
 
-        protected static Coordinate Hero { get; set; }
-
+    class Program
+    {
         private static void InitGame()
         {
             Hero = new Coordinate()
@@ -44,67 +113,15 @@ namespace SpaceWader
 
             MoveHero(0, 0);
         }
-        
-        static void MoveHero(int x, int y)
-        {
-            Coordinate newHero = new Coordinate()
-            {
-                X = Hero.X + x,
-                Y = Hero.Y + y
-            };
-
-            if (CanMove(newHero))
-            {
-                RemoveHero();
-
-                Console.SetCursorPosition(newHero.X, newHero.Y);
-                Console.Write("x");
-                
-                Hero = newHero;
-            }
-        }
-
-        private static void RemoveHero()
-        {
-            Console.SetCursorPosition(Hero.X, Hero.Y);
-            Console.Write(" ");
-        }
-
-        static bool CanMove(Coordinate c)
-        {
-            if (c.X < 0 || c.X >= Console.WindowWidth) return false;
-            if (c.Y < 0 || c.Y >= Console.WindowHeight) return false;
-            return true;
-        }
-
-        private static Timer aTimer;
-
-        private static void SetTimer()
-        {
-            aTimer = new Timer(700);
-            aTimer.Elapsed += OnTimedEvent;
-            aTimer.AutoReset = true;
-            aTimer.Enabled = true;
-        }
-
-        static void OnTimedEvent(object source, ElapsedEventArgs e)
-        {
-            MoveHero(0, 1);
-        }
-
-        static bool CheckXY(int x, int y)
-        {
-            return y > 10 | x > 24 ? true : false;
-        }
 
         static void Main(string[] args)
         {
-            SetTimer();
+            Hero.SetTimer();
 
             string border = "+-+-+-+-+-+-+-+-+-+-+-+-+";
 
-            WriteAt(border, 0, 0);
-            WriteAt(border, 0, 11);
+            World.WriteAt(border, 0, 0);
+            World.WriteAt(border, 0, 11);
 
             InitGame();
 
@@ -115,43 +132,43 @@ namespace SpaceWader
                 switch (keyInfo.Key)
                 {
                     case ConsoleKey.RightArrow:
-                        aTimer.Stop();
-                        MoveHero(1, 0);
-                        aTimer.Start();
+                        Hero.TODOTimer("Stop");
+                        Hero.MoveHero(1, 0);
+                        Hero.TODOTimer("Start");
                         break;
 
                     case ConsoleKey.LeftArrow:
-                        aTimer.Stop();
-                        MoveHero(-1, 0);
-                        aTimer.Start();
+                        Hero.TODOTimer("Stop");
+                        Hero.MoveHero(-1, 0);
+                        Hero.TODOTimer("Start");
                         break;
 
                     case ConsoleKey.DownArrow:
-                        aTimer.Stop();
-                        MoveHero(0, 1);
-                        aTimer.Start();
+                        Hero.TODOTimer("Stop");
+                        Hero.MoveHero(0, 1);
+                        Hero.TODOTimer("Start");
                         break;
                 }
 
-                if (CheckXY(Hero.X, Hero.Y))
+                if (Hero.)
                 {
-                    break;
+
                 }
             }
 
-            RemoveHero();
-            aTimer.Stop();
-            aTimer.Dispose();
+            Hero.RemoveHero();
+            Hero.TODOTimer("Stop");
+            Hero.TODOTimer("Dispose");
 
-            if (Hero.Y > 10 | Hero.X > 24)
+            if (Hero.HeroCord.Y > 10 | Hero.HeroCord.X > 24)
             {
-                WriteAt("You have hit the border", 0, 12);
-                WriteAt("Press any key to exit", 0, 13);
+                World.WriteAt("You have hit the border", 0, 12);
+                World.WriteAt("Press any key to exit", 0, 13);
             }
             else
             {
-                WriteAt("You have hit the ESC key", 0, 12);
-                WriteAt("Press any key to exit", 0, 13);
+                World.WriteAt("You have hit the ESC key", 0, 12);
+                World.WriteAt("Press any key to exit", 0, 13);
             }
 
             Console.ReadKey();
