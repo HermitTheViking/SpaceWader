@@ -47,21 +47,26 @@ namespace SpaceWader
                         Timers.TimerStart();
                         break;
                 }
+
+                if (!Hero.CanMove(Hero.NewHero(1, 1)))
+                {
+                    break;
+                }
             }
 
             Hero.RemoveHero();
             Timers.TimerEnd();
 
-            //if (false)
-            //{
-            //    World.WriteAt("You have hit the border", 0, 12);
-            //    World.WriteAt("Press any key to exit", 0, 13);
-            //}
-            //else
-            //{
-            //    World.WriteAt("You have hit the ESC key", 0, 12);
-            //    World.WriteAt("Press any key to exit", 0, 13);
-            //}
+            if (!Hero.CanMove(Hero.NewHero(1, 1)))
+            {
+                World.WriteAt("You have hit the border", 0, 12);
+                World.WriteAt("Press any key to exit", 0, 13);
+            }
+            else
+            {
+                World.WriteAt("You have hit the ESC key", 0, 12);
+                World.WriteAt("Press any key to exit", 0, 13);
+            }
 
             Console.ReadKey();
         }
