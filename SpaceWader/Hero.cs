@@ -27,17 +27,19 @@ namespace SpaceWader
             {
                 RemoveHero();
 
-                Console.SetCursorPosition(newHero.X, newHero.Y);
-                Console.Write("x");
+                World.WriteAt("x", newHero.X, newHero.Y);
 
                 HeroCord = newHero;
+            }
+            else if (!CanMove(newHero))
+            {
+                throw new ArgumentException("On map? " + CanMove(newHero));
             }
         }
 
         public static void RemoveHero()
         {
-            Console.SetCursorPosition(HeroCord.X, HeroCord.Y);
-            Console.Write(" ");
+            World.WriteAt(" ", HeroCord.X, HeroCord.Y);
         }
 
         public static bool CanMove(Coordinate c)

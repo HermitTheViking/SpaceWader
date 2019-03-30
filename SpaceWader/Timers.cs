@@ -1,4 +1,5 @@
-﻿using System.Timers;
+﻿using System;
+using System.Timers;
 
 namespace SpaceWader
 {
@@ -29,15 +30,21 @@ namespace SpaceWader
             aTimer.Start();
         }
 
-        public static void TimerEnd()
+        public static void TimerDispose()
         {
-            aTimer.Stop();
             aTimer.Dispose();
         }
 
-        static void OnTimedEvent(object source, ElapsedEventArgs e)
+        private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            Hero.MoveHero(0, 1);
+            try
+            {
+                Hero.MoveHero(0, 1);
+            }
+            catch (ArgumentException ae)
+            {
+                World.EndGame(ae);
+            }        
         }
     }
 }
